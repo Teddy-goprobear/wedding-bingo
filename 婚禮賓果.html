@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>婚禮賓果 · Wedding Bingo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@400;500;700&family=Fraunces:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EC;
+    --paper: #FFFFFF;
+    --ink: #2A2A2A;
+    --primary: #3D5240;
+    --primary-light: #6B7F6A;
+    --accent: #B8915A;
+    --accent-soft: #E6D9BE;
+    --muted: #8C8579;
+    --border: #DDD5C5;
+    --task: #B26233;
+    --task-soft: #F4E4D4;
+    --find: #3D5240;
+    --find-soft: #DCE6D5;
+    --skip: #9C9588;
+    --skip-soft: #EBE6DA;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', 'Noto Sans TC', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === Control Bar === */
+  .controls {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(60, 50, 30, 0.06);
+  }
+
+  .controls .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--primary);
+    letter-spacing: 0.05em;
+    margin-right: 24px;
+  }
+
+  .controls button {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 10px 20px;
+    background: var(--primary);
+    color: var(--paper);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+  }
+
+  .controls button:hover { opacity: 0.85; }
+
+  .controls button.secondary {
+    background: var(--paper);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+  }
+
+  /* === Page Base === */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 24px auto;
+    background: var(--paper);
+    box-shadow: 0 4px 30px rgba(60, 50, 30, 0.08);
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* === Page 1: Rules === */
+  .page-rules {
+    padding: 22mm 22mm;
+  }
+
+  .page-rules::before {
+    content: '';
+    position: absolute;
+    top: 12mm;
+    left: 12mm;
+    right: 12mm;
+    bottom: 12mm;
+    border: 1px solid var(--accent-soft);
+    pointer-events: none;
+  }
+
+  .ornament-top {
+    text-align: center;
+    color: var(--accent);
+    font-size: 14px;
+    letter-spacing: 1em;
+    margin-bottom: 8px;
+  }
+
+  .page-rules h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 52px;
+    color: var(--primary);
+    text-align: center;
+    margin: 8px 0 4px;
+    letter-spacing: 0.04em;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 16px;
+    letter-spacing: 0.3em;
+    margin-bottom: 4px;
+  }
+
+  .duration-tag {
+    display: block;
+    text-align: center;
+    margin: 16px auto 28px;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    text-align: center;
+    margin: 24px 0;
+    color: var(--accent);
+    font-size: 12px;
+    letter-spacing: 0.8em;
+  }
+
+  .section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--primary);
+    margin: 24px 0 12px;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .section h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 12px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .section p, .section li {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .section ul {
+    padding-left: 18px;
+    margin: 0;
+  }
+
+  .section li { margin-bottom: 4px; }
+
+  .type-card {
+    margin: 10px 0;
+    padding: 12px 16px;
+    border-left: 3px solid;
+    background: rgba(0,0,0,0.015);
+  }
+
+  .type-card.task { border-color: var(--task); }
+  .type-card.find { border-color: var(--find); }
+  .type-card.skip { border-color: var(--skip); }
+
+  .type-card .type-head {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 17px;
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .type-card.task .type-head { color: var(--task); }
+  .type-card.find .type-head { color: var(--find); }
+  .type-card.skip .type-head { color: var(--skip); }
+
+  .type-card .type-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  .type-card .type-desc em {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  /* === Page 2: Reference === */
+  .page-ref {
+    padding: 22mm 22mm;
+  }
+
+  .page-ref h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 36px;
+    color: var(--primary);
+    text-align: center;
+    margin: 0;
+    letter-spacing: 0.03em;
+  }
+
+  .reference-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 12.5px;
+  }
+
+  .reference-table th {
+    background: var(--primary);
+    color: var(--paper);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  .reference-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .reference-table tr:nth-child(even) td {
+    background: rgba(0,0,0,0.012);
+  }
+
+  .num-cell {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--primary);
+    width: 50px;
+    text-align: center;
+  }
+
+  .type-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .tag-task { background: var(--task-soft); color: var(--task); }
+  .tag-find { background: var(--find-soft); color: var(--find); }
+  .tag-skip { background: var(--skip-soft); color: var(--skip); }
+
+  .reference-table .content-cell {
+    color: var(--ink);
+  }
+
+  .reference-table tr.skip .content-cell { color: var(--muted); }
+
+  .ref-footnote {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .ref-footnote strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    color: var(--primary);
+    letter-spacing: 0.05em;
+  }
+
+
+  /* === Print === */
+  @media print {
+    body { background: var(--paper); }
+    .controls { display: none; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+    }
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <div class="brand">Wedding Bingo</div>
+  <button onclick="window.print()">列印</button>
+</div>
+
+<!-- ===== PAGE 1: 規則 ===== -->
+<div class="page page-rules">
+  <div class="ornament-top">❦  ❦  ❦</div>
+  <div class="subtitle">— THE GAME OF —</div>
+  <h1>婚禮賓果</h1>
+  <div class="subtitle" style="margin-top: 4px;">Wedding Bingo</div>
+  <div class="duration-tag">遊戲時間 約 20–30 分鐘</div>
+
+  <div class="divider">· · · · ·</div>
+
+  <div class="section">
+    <h2>遊戲簡介</h2>
+    <p>每位賓客會拿到一張賓果卡，卡上有 <strong>1–25 的數字隨機排列</strong>。主持人會輪流喊出號碼，每個號碼會觸發不同的指令。先連成三條線（橫、直、斜任一方向皆可）的人，舉手大喊「<strong>賓果！</strong>」即可獲得獎品。</p>
+  </div>
+
+  <div class="section">
+    <h2>三種號碼類型</h2>
+
+    <div class="type-card task">
+      <div class="type-head">🎯 任務型</div>
+      <div class="type-desc">主持人喊到號碼後，會公布一個小任務。例如「跟今天第一次見面的人合照」或「找到跟你同生肖的人」。<strong>完成任務後才能將格子圈起來。</strong></div>
+    </div>
+
+    <div class="type-card find">
+      <div class="type-head">👤 找到這個人</div>
+      <div class="type-desc">主持人會說出一段與新人有關的小故事提示，例如「找到曾經被新郎『忘東忘西』事件波及的人」。在場可能有 3–5 位符合條件的賓客，由自願者舉手或主持人點名，輪流分享自己經歷的版本。<br><em>＊ 最後分享故事的人，可獲得下一輪喊號碼的權利。</em><br>故事分享完畢後，全場拿到該號碼的人才能圈起來。</div>
+    </div>
+
+    <div class="type-card skip">
+      <div class="type-head">⚪ 沒事型</div>
+      <div class="type-desc">不觸發任何任務，拿到該號碼的人直接將格子圈起來即可。這類型用來調節節奏，讓遊戲不會太緊湊。</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>獲獎規則</h2>
+    <ul>
+      <li>連線方式：橫、直、斜任一方向連成 5 格，需連成三條線</li>
+      <li>第一位舉手喊出「賓果！」並經主持人驗證的賓客獲得獎品</li>
+      <li>遊戲在獎品被領走後結束，或時間到（約 30 分鐘）後結束</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>注意事項</h2>
+    <ul>
+      <li>每張賓果卡上的號碼排列不同，請以自己卡片上的號碼為準</li>
+      <li>若沒有拿到被喊到的號碼，可以欣賞其他人的互動</li>
+      <li>「找到這個人」若無人自願，主持人會點出符合條件的賓客</li>
+    </ul>
+  </div>
+
+  <div class="divider" style="margin-top: 40px;">❦  ❦  ❦</div>
+</div>
+
+<!-- ===== PAGE 2: 主持人對照表 ===== -->
+<div class="page page-ref">
+  <div class="ornament-top">❦</div>
+  <div class="subtitle">— REFERENCE FOR THE HOST —</div>
+  <h1>主持人號碼對照表</h1>
+  <div class="subtitle" style="margin-top: 4px;">Master of Ceremony's Guide</div>
+  <div class="divider">· · ·</div>
+
+  <table class="reference-table">
+    <thead>
+      <tr>
+        <th style="width: 60px;">No.</th>
+        <th style="width: 80px;">類型</th>
+        <th>內容</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="task"><td class="num-cell">1</td><td><span class="type-tag tag-task">任務</span></td><td class="content-cell">全場舉杯對新人說「恭喜！」</td></tr>
+      <tr class="find"><td class="num-cell">2</td><td><span class="type-tag tag-find">找人</span></td><td class="content-cell">找到曾經被新郎「忘東忘西」事件波及的人</td></tr>
+      <tr class="skip"><td class="num-cell">3</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="task"><td class="num-cell">4</td><td><span class="type-tag tag-task">任務</span></td><td class="content-cell">跟身邊的人隨機三人一組，找出共同點（不能是「都認識新人」「都是人類」這種）</td></tr>
+      <tr class="skip"><td class="num-cell">5</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="find"><td class="num-cell">6</td><td><span class="type-tag tag-find">找人</span></td><td class="content-cell">找到曾經吃過新娘下廚 / 做甜點的人</td></tr>
+      <tr class="task"><td class="num-cell">7</td><td><span class="type-tag tag-task">任務</span></td><td class="content-cell">跟今天第一次見面的人合照</td></tr>
+      <tr class="skip"><td class="num-cell">8</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="skip"><td class="num-cell">9</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="find"><td class="num-cell">10</td><td><span class="type-tag tag-find">找人</span></td><td class="content-cell">找到看過或發現過新人小曖昧的人</td></tr>
+      <tr class="task"><td class="num-cell">11</td><td><span class="type-tag tag-task">任務</span></td><td class="content-cell">找到一個跟你同月生日的人</td></tr>
+      <tr class="skip"><td class="num-cell">12</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="find"><td class="num-cell">13</td><td><span class="type-tag tag-find">找人</span></td><td class="content-cell">找到曾經看過新娘「為了一件小事崩潰」的人</td></tr>
+      <tr class="skip"><td class="num-cell">14</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="task"><td class="num-cell">15</td><td><span class="type-tag tag-task">任務</span></td><td class="content-cell">找到一個跟你同生肖的人</td></tr>
+      <tr class="find"><td class="num-cell">16</td><td><span class="type-tag tag-find">找人</span></td><td class="content-cell">找到交往前聽過新娘提起新郎的人</td></tr>
+      <tr class="skip"><td class="num-cell">17</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="skip"><td class="num-cell">18</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="task"><td class="num-cell">19</td><td><span class="type-tag tag-task">任務</span></td><td class="content-cell">找到一個不認識的人，互相推薦一家最近去過的好店</td></tr>
+      <tr class="find"><td class="num-cell">20</td><td><span class="type-tag tag-find">找人</span></td><td class="content-cell">找到看過新娘 / 新郎求學時期黑歷史照片的人</td></tr>
+      <tr class="skip"><td class="num-cell">21</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="task"><td class="num-cell">22</td><td><span class="type-tag tag-task">任務</span></td><td class="content-cell">跟左右兩邊的人各擊掌一次</td></tr>
+      <tr class="skip"><td class="num-cell">23</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+      <tr class="find"><td class="num-cell">24</td><td><span class="type-tag tag-find">找人</span></td><td class="content-cell">找到曾經陪新娘度過低潮的人</td></tr>
+      <tr class="skip"><td class="num-cell">25</td><td><span class="type-tag tag-skip">沒事</span></td><td class="content-cell">—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ref-footnote">
+    <strong>主持人小提醒</strong><br>
+    建議第一輪從 <strong>1 號</strong>（全場舉杯）開場，氣氛最容易拉起來。<br>
+    <strong>24 號</strong>（陪新娘度過低潮）情感濃度最高，若太早抽到可多停留，當作中段情感重磅；後段抽到則是天然壓軸。<br>
+    沒事型號碼可以順口加一句串場，例如「3 號——這顆是放水球，恭喜有 3 號的朋友！」避免冷場。
+  </div>
+</div>
+
+
+</body>
+</html>
