@@ -912,11 +912,6 @@
         <tbody id="editorBody"></tbody>
       </table>
 
-      <div class="ref-footnote">
-        <strong>主持人小提醒</strong><br>
-        建議第一輪從 <strong>1 號</strong>（全場舉杯）開場，氣氛最容易拉起來。<br>
-        「沒事」型號碼可以順口加一句串場，例如「3 號——這顆是放水球，恭喜有 3 號的朋友！」避免冷場。
-      </div>
     </div>
 
     <div class="setup-bottom">
@@ -1155,14 +1150,9 @@
   }
 
   function generateGrid() {
-    const rest = [];
-    for (let i = 2; i <= 25; i++) rest.push(i);
-    shuffle(rest);
     gridNumbers = [];
-    let ri = 0;
-    for (let i = 0; i < 25; i++) {
-      gridNumbers.push(i === 12 ? 1 : rest[ri++]);
-    }
+    for (let i = 1; i <= 25; i++) gridNumbers.push(i);
+    shuffle(gridNumbers);
   }
 
   function shuffle(arr) {
